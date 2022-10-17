@@ -136,41 +136,6 @@ p.alignLeft
     margin-top: 70px;
     text-align: left;
 }
-/*dropdowm*/
-.mainmenubtn {
-    background-color: #333;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding:20px;
-    margin-top:0px;
-    font-family: Arial, sans-serif;
-    font-size: 22px;
-}
-    
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-.dropdown-child {
-    display: none;
-    position: absolute;
-    background:rgba(0, 0, 0, 0) ;
-    min-width: 94px;
-}
-.dropdown-child a {
-    color: white;
-    padding: 20px;
-    text-decoration: none;
-    display:block;
-
-}
-.dropdown:hover .dropdown-child {
-    display: block;
-}
-.mainmenubtn{
-    background: rgba(0, 0, 0, 0);
-}
 /*selection:about*/
 /**/
 .social-icons
