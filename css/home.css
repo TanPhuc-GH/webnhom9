@@ -61,8 +61,7 @@ body {
 
 }
 
-.navbar__search-box-input {
-
+.navbar__search-box:focus-within {
 }
 
 
@@ -106,6 +105,91 @@ body {
     color: #333333;
 }
 
+/* Searching history */
+
+.search-box__input:focus ~.search-box-recommendation-wrapper {
+    display: block;
+}
+
+.search-box-recommendation-wrapper:active, .search-box-recommendation-wrapper:hover  {
+    display: block;
+}
+
+
+.search-box-recommendation-wrapper {
+    display: none;
+    position: absolute;
+    top: 100%;
+    background-color: #fff;
+    width: calc(100% - 80px);
+    color: black;
+    margin-top: 4px;
+    z-index: 2;
+    width: 800px;
+    border-radius: 12px;
+    -webkit-box-shadow: 0 6px 20px rgb(0 0 0 / 8%);
+    box-shadow: 0 6px 20px rgb(0 0 0 / 8%);
+    overflow: hidden;
+}
+
+.search-box-recommendation {
+    position: relative;
+    padding: 28px 20px 32px;
+    min-height: 200px;
+    max-height: 540px;
+    overflow-y: auto;
+    -ms-scroll-chaining: none;
+    overscroll-behavior: contain;
+}
+
+.search-group {
+    margin-bottom: 20px;
+}
+
+.search-box__heading {
+    font-size: 16px;
+    line-height: 1.44;
+    font-weight: 600;
+    color: #212121;
+    margin-bottom: 7px;
+}
+
+.search-box__heading i {
+    color: orangered;
+}
+
+.search-box__list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.search-box__item {
+    font-size: 14px;
+    line-height: 1.44;
+    font-weight: 300;
+    display: inline-block;
+    padding: 8px 10px;
+    background: #f5f5f5;
+    border-radius: 99rem;
+    margin: 5px 10px 5px 0;
+    max-width: 310px;
+    height: 36px;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+
+.search-box__item:hover {
+    background-color: #eee;
+    cursor: pointer;
+}
+
+
 /* The right of navbar */
 
 
@@ -147,7 +231,7 @@ body {
     right: 0;
 }
 
-.navbar-cart-wrapper {
+.dropdown-wrapper {
     display: none;
     position: absolute;
     top: calc(100% + 10px);
@@ -159,6 +243,10 @@ body {
     color: #212121;
     font-size: 14px;
     animation: navbarOption .2s ease;
+
+}
+
+.navbar-cart-wrapper {
     transform-origin: calc(100% - 30px) top;
     width: 400px;
     max-width: 1280px;
@@ -261,20 +349,7 @@ body {
 }
 
 .navbar-user-option {
-    display: none;
-    position: absolute;
-    top: calc(100% + 10px);
-    right: 0;
-    background-color: #fff;
-    z-index: 99;
-    border-radius: 6px;
-    box-shadow: 0px 0px 30px rgb(0 0 0 / 10%);
-    color: #212121;
-    font-size: 14px;
-    animation: navbarOption .2s ease;
     transform-origin: calc(100% - 8px) top;
-
-
 }
 
 .navbar-user-option::after {
