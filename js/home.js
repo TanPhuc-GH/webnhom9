@@ -33,6 +33,10 @@ const childrenElement = $('#Children');
 const childrenPrevBtn = $('#children__prev-btn');
 const childrenNextBtn = $('#children__next-btn');
 
+const treeElement = $('.destination-category-tree');
+const selectedElement = $('#Selected');
+
+
 
 const app = {
     menuItemIcon : [
@@ -164,7 +168,7 @@ const app = {
             review: '15K+',
             sellPrice: '835,000',
             oldPrice: '850,000',
-            hasTagging: false
+            hasTag: false
         },
         {
             img: 'https://res.klook.com/image/upload/c_fill,w_550,h_308/fl_lossy.progressive,q_85,f_auto/activities/oklw8nrqcrhpxz2bjbpv.webp',
@@ -173,7 +177,7 @@ const app = {
             review: '3,300',
             sellPrice: '200,000',
             oldPrice: '',
-            hasTagging: true
+            hasTag: true
         },
         {
             img: 'https://res.klook.com/image/upload/c_fill,w_550,h_308/fl_lossy.progressive,q_85,f_auto/activities/mzefblljuetiycoas1or.webp',
@@ -182,7 +186,7 @@ const app = {
             review: '5,434',
             sellPrice: '510,590',
             oldPrice: '660,062',
-            hasTagging: true
+            hasTag: true
         },
         {
             img: 'https://res.klook.com/image/upload/c_fill,w_550,h_308/fl_lossy.progressive,q_85,f_auto/activities/zrx0bcfskdaryfq9sqcf.webp',
@@ -191,7 +195,7 @@ const app = {
             review: '1,907',
             sellPrice: '715,000',
             oldPrice: '737,000',
-            hasTagging: true
+            hasTag: true
         },
         {
             img: 'https://res.klook.com/image/upload/c_fill,w_550,h_308/fl_lossy.progressive,q_85,f_auto/activities/plj4bu6khwrkiimbmwnh.webp',
@@ -200,7 +204,7 @@ const app = {
             review: '2,241',
             sellPrice: '95,000',
             oldPrice: '100,000',
-            hasTagging: true
+            hasTag: true
         },
         {
             img: 'https://res.klook.com/image/upload/c_fill,w_550,h_308/fl_lossy.progressive,q_85,f_auto/activities/jp6myjn3zt4jdblopcdk.webp',
@@ -209,7 +213,7 @@ const app = {
             review: '4,339',
             sellPrice: '200,000',
             oldPrice: '',
-            hasTagging: true
+            hasTag: true
         }
     ]
     ,
@@ -221,8 +225,51 @@ const app = {
     promotionCurX: 0,
     datingCurX: 0,
     childrenCurX: 0,
+    checkDiscounting(item) {
+        if(item.oldPrice === '') {
+            return false;
+        }
+        return true;
+    },
+    displayDiscountAndTag(selector) {
+        const collection = selector.children;
+        for (let i = 0; i < collection.length; i++) {
+            if(collection[i].attributes['is-discounting'].value === "false") {
+                collection[i].querySelector('.item-price-box__old-price-box').style.display = 'none';
+            }
 
-    render() {
+            if(collection[i].attributes['has-tag'].value === "false") {
+                collection[i].querySelector('.item__tagging').style.display = 'none';
+            }
+        }
+    }
+    ,
+    renderTagOnSearchPage() {
+        let nodeList = $$('.tree-list-item__node');
+
+        let tagContentArray = Array.from(nodeList).map((item, index) => {
+            if(item.querySelector("input[type='checkbox'").checked === true) {
+                return {'nodeIndex': index, 'nodeValue': item.querySelector('span').innerText};
+            }
+        }, [])
+
+        let tagHtml = tagContentArray.reduce((html, item) => {
+            if(item !== undefined) {
+                return html + `
+                <li class="selected-tag" onclick="deleteSelectedTag(event)" node-index="${item.nodeIndex}">
+                    <span>${item.nodeValue}</span> 
+                    <i class="ti-close"></i>
+                </li>
+                `
+            }   
+            return html;
+            
+        }, '')
+        selectedElement.innerHTML = tagHtml ? tagHtml : '';
+
+    },
+
+    renderHomePage() {
         // Render menu
         let renderMenu = this.menuItemIcon.reduce(function (html, item, i) {
             return html + `
@@ -254,9 +301,105 @@ const app = {
         topDestination.innerHTML = renderTopDestination;
 
         // Render best seller items
-        let renderBestSeller = this.bestSeller.reduce(function(html, item, i) {
+        let renderBestSeller = this.bestSeller.reduce((html, item, i) => {
             return html + `
-                <div class="category-swiper__item-wrapper"  >
+                <div class="category-swiper__item-wrapper" has-tag="${item.hasTag}" is-discounting="${this.checkDiscounting(item)}" "  >
+
+                    <div class="category-swiper__item hover-effect">
+                        <div class="item__heading" style="background-image: url('${item.img}')">
+                            
+                        </div>
+                        <div class="item__body">
+                            <div class="item__body--top">
+                                <div class="item__title">
+                                    <span>${item.title}</span>
+                                </div>
+                                <div class="item__activity">
+                                    <span class="item__activity-score">
+                                        <i class="fa-solid fa-star"></i>
+                                        <span class="activity-score__rate">${item.rate}</span>
+                                    </span>
+                                    <span class="item__activity-review">
+                                        (
+                                            <span class="activity-review__number">${item.review}</span>
+                                        &nbsp;đánh giá)
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="item__body--bottom">
+                                <div class="item-price-box">
+                                    <span class="item-price-box__sell-price-box">₫ &nbsp<span class="sell-price__value">${item.sellPrice}</span> </span>
+                                    <span class="item-price-box__old-price-box">₫ &nbsp<span class="old-price__value">${item.oldPrice}</span> </span>
+                                </div>
+                                <div class="item__tagging-wrapper">
+                                    <div class="item__tagging">
+                                        <p>Chính sách đảm bảo về giá</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+        }, '');
+        bestSellerElement.innerHTML = renderBestSeller;
+
+        bookNowElement.innerHTML = renderBestSeller;
+        newActivityElement.innerHTML = renderBestSeller;
+        promotionElement.innerHTML = renderBestSeller;
+        datingElement.innerHTML = renderBestSeller;
+        childrenElement.innerHTML = renderBestSeller;
+
+        this.displayDiscountAndTag(bestSellerElement);
+        this.displayDiscountAndTag(bookNowElement);
+        this.displayDiscountAndTag(newActivityElement);
+        this.displayDiscountAndTag(promotionElement);
+        this.displayDiscountAndTag(datingElement);
+        this.displayDiscountAndTag(childrenElement);
+
+
+    },
+    renderSearchPage() {
+        // Render destination list item 
+        let destinationItems = this.topDestinationItem.map(({img, name}) => name);
+        let renderdestinationItems = destinationItems.reduce((html, item, index) => {
+            return html + `
+            <label class="tree-list-item__node" for="DesCheckBox-${index}">
+                <div class="input__check-icon">
+                    <i class="fa-solid fa-check input__check-icon"></i>
+                </div>
+                <input type="checkbox" value ="" id="DesCheckBox-${index}" class="appearance-none h-4 w-4 border border-gray-300 hover:border-orange rounded-sm bg-white checked:bg-orange 
+                checked:border-orange focus:outline-none transition duration-200 mt-1 mr-2"> 
+                <span>${item}</span>
+            </label>
+            `
+        }, '')
+        const treeListItem = $('#Destination');
+        treeListItem.innerHTML = renderdestinationItems;
+
+        // Render category list item 
+        let categoryItems = this.menuItemIcon.map(({img, description}) => description);
+        let renderCategoryItems = categoryItems.reduce((html, item, index) => {
+            return html + `
+            <label class="tree-list-item__node" for="CategoryCheckBox-${index}">
+                <div class="input__check-icon">
+                    <i class="fa-solid fa-check input__check-icon"></i>
+                </div>
+                <input type="checkbox" value ="" id="CategoryCheckBox-${index}" class="appearance-none h-4 w-4 border border-gray-300 hover:border-orange rounded-sm bg-white checked:bg-orange 
+                checked:border-orange focus:outline-none transition duration-200 mt-1 mr-2"> 
+                <span>${item}</span>
+            </label>
+            `
+        }, '')
+        const categoryListItem = $('#Category');
+        categoryListItem.innerHTML = renderCategoryItems;
+
+        // Render search list
+        const searchList = $('#SearchList');
+        let renderSearchList = this.bestSeller.reduce((html, item, index) => {
+            return html + `
+            <div class="category-swiper__item-wrapper" has-tag="${item.hasTag}" is-discounting="${this.checkDiscounting(item)}" ">
                 <div class="category-swiper__item hover-effect">
                     <div class="item__heading" style="background-image: url('${item.img}')">
                         
@@ -295,18 +438,31 @@ const app = {
             </div>
             `
         }, '');
-        
-        bestSellerElement.innerHTML = renderBestSeller;
+        searchList.innerHTML = renderSearchList;
 
-        bookNowElement.innerHTML = renderBestSeller;
-        newActivityElement.innerHTML = renderBestSeller;
-        promotionElement.innerHTML = renderBestSeller;
-        datingElement.innerHTML = renderBestSeller;
-        childrenElement.innerHTML = renderBestSeller;
+        const searhListCollection = searchList.children;
+        for (let i = 0; i < searhListCollection.length; i++) {
+            if((i + 1) % 3 === 0) {
+                searhListCollection[i].style.marginRight = 0 + 'px';
+            }
+        }
+
+        // Display discount and tag on card 
+        this.displayDiscountAndTag(searchList);
+
+        // Render activity count
+        const activityCount = $('.search-result-container .activity-count span'); 
+        activityCount.innerHTML = searchList.children.length;
+
+        // Render selected tag 
+        this.renderTagOnSearchPage();
+        
+   
+
 
     },
 
-    handleEvent() {
+    handleEventHomePage() {
 
         const menuWidth = menu.offsetWidth;
         const hideMenuNextBtnValue = -(menuWidth -30 - 1176);
@@ -423,11 +579,30 @@ const app = {
             this.childrenCurX = this.childrenCurX + 944;
             this.disPlaySwipeCardButton(this.childrenCurX, childrenNextBtn, childrenPrevBtn, -944);
         }
+    },
+    handleEventSearchPage() {
+        // Event click node
+        let nodeList = $$('.tree-list-item__node');
+        Array.from(nodeList).forEach((node, index) => {
+            node.onclick = () => {
+                app.renderTagOnSearchPage();
+                displaySelectedTagElement();
+
+            }
+
+        })
+        
+
+        // Event click 'Clear Selection'
+        let clearSelectionBtn = $('.clear-selection-btn');
+        clearSelectionBtn.onclick = () => {
+            Array.from(selectedElement.children).forEach((tag, index) => {
+                tag.click();
+            })
+        }
 
 
 
-       
-      
 
     },
     swipe(selector, curX, addValue) {
@@ -441,12 +616,39 @@ const app = {
         curX === 0 ? prevBtn.style.display = 'none' : prevBtn.style.display = 'flex';
     },
 
-    start() {
-        this.render();
-        this.handleEvent();
-    }
+    startHomePage() {
+        this.renderHomePage();
+        this.handleEventHomePage();
+    },
+    startSearchPage() {
+        this.renderSearchPage();
 
+        this.handleEventSearchPage();
+    }
+    
+}
+
+
+function deleteSelectedTag(event) {
+    let nodeList = $$('.tree-list-item__node');
+    let selectedTagElement = event.target.closest('.selected-tag');
+    let nodeIndex = selectedTagElement.attributes['node-index'].value;
+    let xCoordOfTree = treeElement.scrollTop;
+    nodeList[nodeIndex].click();
+    treeElement.scroll(0, xCoordOfTree);
+
+    displaySelectedTagElement();
+    
 
 }
 
-app.start();
+function displaySelectedTagElement() {
+    let firstChildOfTreeElement = treeElement.children[0];
+
+    if(!selectedElement.hasChildNodes()) {
+        firstChildOfTreeElement.style.display = 'none';
+    }
+    else {
+        firstChildOfTreeElement.style.display = 'block';
+    }
+}
