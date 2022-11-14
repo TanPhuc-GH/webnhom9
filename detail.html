@@ -228,7 +228,8 @@
                         <div>
                             <div class="price-package">
                                 <span class="price-package-selling-price">
-                                    <b>₫ 1,686,500</b>
+                                    <span>đ</span>
+                                    <b id = "price">1686500</b>
                                 </span>
                             </div>
                         </div>
@@ -262,24 +263,16 @@
                         <div class="label">Số lượng</div>
                         <div class="main_service_quatity" style ="display:flex; justify-content:space-between;">
                             <div>Người lớn</div>
-                            <div class="row">
-                                <button class="col-3 main_service_quatity_min">-</button>
-                                <div class="col-4">1</div>
-                                <button class="col-3 main_service_quatity_plus">+</button>
-                            </div>
+                            <input type="number" min=0 max = 10 class="input_number" value="1" onchange="Amount()" id ="adultValue">
                         </div>
                         <div class="gap"></div>
                         <div class="main_service_quatity" style ="display:flex; justify-content:space-between;">
                             <div>Trẻ con</div>
-                            <div class="row">
-                                <button class="col-3 main_service_quatity_min">-</button>
-                                <div class="col-4">0</div>
-                                <button class="col-3 main_service_quatity_plus">+</button>
-                            </div>
+                            <input type="number" min=0 max = 10 class="input_number" value="0" onchange="Amount()" id = "childValue">
                         </div>
                         <div class="gap"></div>
                         <div class="main_service_button">
-                            <div>1990000đ</div>
+                            <div id ="amount">1990000đ</div>
                             <button>Thêm vào giỏ hàng</button>
                             <button>Đặt ngay</button>
                         </div>
@@ -400,7 +393,20 @@
             <div class="gap"></div>
         </footer>
 
+       
 <script src="./js/home.js" type="text/javascript"></script>
+<script>
+          function Amount()
+          {
+            let adultValue = document.getElementById("adultValue").value;
+            let childValue = document.getElementById("childValue").value;
+            let price = document.getElementById("price").innerHTML;
+
+            let amount = (+price)* (+adultValue) + (+price)* (+childValue)*0.5;
+            document.getElementById("amount").innerHTML = amount;  
+            console.log(typeof(+price));
+          }  
+</script>
 <script>
     app.startHomePage();
 </script>
